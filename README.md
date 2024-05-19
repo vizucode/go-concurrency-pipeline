@@ -36,7 +36,7 @@ The concurrency-pattern pipeline splits the encryption process into distinct sta
 - **Complexity:** Requires careful management of threads and processes, increasing the complexity of the codebase.
 - **Error Handling:** More challenging to implement robust error handling across multiple concurrent tasks.
 
-![Concurrency Pattern](https://your-image-link-here.com/concurrency-pattern.jpg)
+![Concurrency Pattern](https://firebasestorage.googleapis.com/v0/b/personal-website-1d263.appspot.com/o/project-pict%2Fconcurrent.png?alt=media&token=f802c366-678f-456b-a6de-d2fa5f03868a)
 
 ## Sequential Pattern
 The sequential pattern processes each file one after the other, ensuring that each step of the encryption process is completed before moving on to the next file.
@@ -49,7 +49,7 @@ The sequential pattern processes each file one after the other, ensuring that ea
 - **Performance:** Can be slower, as files are processed one at a time, limiting throughput.
 - **Scalability:** Less efficient with additional hardware resources, as it doesn't leverage parallel processing.
 
-![Sequential Pattern](https://your-image-link-here.com/sequential-pattern.jpg)
+![Sequential Pattern](https://firebasestorage.googleapis.com/v0/b/personal-website-1d263.appspot.com/o/project-pict%2Fsequential.png?alt=media&token=ef8fa12b-5df8-45c2-9db4-2eb3bc30e31a)
 
 ## Trade-offs
 
