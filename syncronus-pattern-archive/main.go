@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -40,10 +41,7 @@ func createZip(sourceDir string) (err error) {
 	nowUnix := time.Now().Unix()
 
 	// create output folder
-	err = os.Mkdir("output", 0755)
-	if err != nil {
-		return err
-	}
+	os.Mkdir("output", 0755)
 
 	zippedFile, err := os.Create(fmt.Sprintf("output/result-%d.zip", nowUnix))
 	if err != nil {
@@ -138,6 +136,35 @@ func EncryptArchive(filePath string) {
 	}
 }
 
+func fileSeeder(sourceFolder string, nFile int) {
+	for i := 0; i < nFile; i++ {
+		file, err := os.Create(fmt.Sprintf("%s/text-%d.text", sourceFolder, i))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var words = []string{
+			"lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
+			"sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore",
+			"magna", "aliqua", "ut", "enim", "ad", "minim", "veniam", "quis", "nostrud",
+			"exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea",
+			"commodo", "consequat", "duis", "aute", "irure", "dolor", "in", "reprehenderit",
+			"in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla",
+			"pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident",
+			"sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id",
+			"est", "laborum",
+		}
+
+		var sb strings.Builder
+		for j := 0; j < 5000; j++ {
+			word := words[int(time.Now().Unix())%len(words)]
+			sb.WriteString(word)
+		}
+
+		file.Write([]byte(sb.String()))
+	}
+}
+
 func main() {
 	// call times stamp
 	start := time.Now()
@@ -145,8 +172,8 @@ func main() {
 
 	// create folder files
 	err := os.Mkdir(sourceFolder, 0755)
-	if err != nil {
-		log.Fatal(err)
+	if err == nil {
+		fileSeeder(sourceFolder, 3000)
 	}
 
 	EncryptArchive(sourceFolder)
