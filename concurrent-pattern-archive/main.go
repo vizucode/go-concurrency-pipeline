@@ -2,6 +2,7 @@ package main
 
 import (
 	seeder "concurrentarchive/fileSeeder"
+	archive "concurrentarchive/secureArchive"
 	"fmt"
 	"log"
 	"os"
@@ -17,6 +18,7 @@ func main() {
 	now := time.Now()
 
 	seeder.ExecSeeder(3000, "files")
+	archive.ExecSecureArchive("./files")
 
 	since := time.Since(now)
 	fmt.Printf("Executed in %f second", since.Seconds())

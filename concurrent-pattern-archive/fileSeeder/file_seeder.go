@@ -17,7 +17,7 @@ func createFile(nFile int, targetFolder string) <-chan File {
 	go func(out chan File) {
 		defer close(chanFileOut)
 		for i := 0; i < nFile; i++ {
-			file, _ := os.Create(fmt.Sprintf("%s/text-%d.text", targetFolder, i))
+			file, _ := os.Create(fmt.Sprintf("%s/text-%d.txt", targetFolder, i))
 			out <- File{File: file}
 		}
 	}(chanFileOut)
