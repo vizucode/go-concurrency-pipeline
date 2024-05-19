@@ -99,11 +99,6 @@ func encryptContent(chanFile <-chan File) <-chan File {
 				continue
 			}
 
-			_, err = file.File.Seek(0, 0)
-			if err != nil {
-				log.Println(err)
-			}
-
 			chanFileOut <- File{
 				File: file.File,
 			}
