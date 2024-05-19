@@ -1,115 +1,78 @@
-Sure! Below is a `README.md` file for your project, including a sequence diagram.
-
-### `README.md`
-
 ```markdown
-# Secure File Archiving Application
+# Concurrency-pattern Pipeline for Secure Archiving
 
-This application reads files from a source directory, encrypts them using AES encryption, and archives the encrypted files. The process utilizes Go channels for concurrent processing and stream handling.
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Project Overview](#project-overview)
+3. [Architecture](#architecture)
+4. [Concurrency-pattern Pipeline](#concurrency-pattern-pipeline)
+    - [Reading Files](#reading-files)
+    - [Encrypting Content](#encrypting-content)
+    - [Multiplexing](#multiplexing)
+    - [Archiving](#archiving)
+5. [Sequence Diagram](#sequence-diagram)
+6. [Installation](#installation)
+7. [Usage](#usage)
+8. [Conclusion](#conclusion)
+9. [References](#references)
+
+## Introduction
+This project demonstrates the use of a concurrency-pattern pipeline for securely archiving files. The pipeline improves performance and scalability by concurrently processing files through multiple stages: reading, encrypting, multiplexing, and archiving.
+
+## Project Overview
+The goal of this project is to showcase the benefits and implementation details of using a concurrency-pattern pipeline for secure file archiving. The process involves reading files from a source directory, encrypting them using AES encryption, multiplexing the encrypted data, and finally archiving the result.
+
+## Architecture
+The architecture of this project follows a pipeline pattern where each stage of the process is handled concurrently. This design leverages Go's concurrency features to enhance performance and scalability.
+
+## Concurrency-pattern Pipeline
+
+### Reading Files
+The first stage in the pipeline is reading files from the source directory. This is done by the `readFile` function, which reads the contents of the directory and sends file data through a channel.
+
+### Encrypting Content
+The next stage involves encrypting the content of the files. This is achieved by three concurrent encryptor functions (`encryptContent`), each operating on the same input channel (`chanFile`). These functions encrypt the file data using AES encryption and send the encrypted data through separate channels.
+
+### Multiplexing
+The multiplexing stage combines the output from the three encryption channels into a single channel. This is done by the `multiPlexerEncrypt` function, which merges the encrypted data streams for further processing.
+
+### Archiving
+The final stage of the pipeline is archiving the encrypted data. The `archive` function takes the multiplexed encrypted data and creates a ZIP archive, storing the result in the output directory.
 
 ## Sequence Diagram
+![Concurrency Pattern](https://firebasestorage.googleapis.com/v0/b/personal-website-1d263.appspot.com/o/project-pict%2Fconcurrent.png?alt=media&token=f802c366-678f-456b-a6de-d2fa5f03868a)
 
-```plaintext
-+--------------------+          +--------------------+        +---------------------+          +------------------+
-|  ExecSecureArchive |          |     readFile       |        |   encryptContent    |          |     archive      |
-+---------+----------+          +---------+----------+        +---------+-----------+          +--------+---------+
-          |                             |                           |                            |                
-          |---------------------------->|                           |                            |
-          |   chanFile = readFile()     |                           |                            |
-          |                             |-------------------------->|                            |
-          |                             |    chanEnc1 = encryptContent(chanFile)                 |
-          |                             |                           |                            |
-          |                             |                           |                            |
-          |                             |                           |                            |
-          |                             |-------------------------->|                            |
-          |                             |    chanEnc2 = encryptContent(chanFile)                 |
-          |                             |                           |                            |
-          |                             |                           |                            |
-          |                             |                           |                            |
-          |                             |-------------------------->|                            |
-          |                             |    chanEnc3 = encryptContent(chanFile)                 |
-          |                             |                           |                            |
-          |                             |                           |                            |
-          |                             |<--------------------------|                            |
-          |     chanEncOut = multiPlexerEncrypt(chanEnc1, chanEnc2, chanEnc3)                   |
-          |---------------------------->|                           |                            |
-          |       archive(chanEncOut)   |                           |-------------------------->|
-          |                             |                           |   Archive Data            |
-+---------+----------+          +---------+----------+        +---------+-----------+          +--------+---------+
-```
+## Installation
+To install and run this project, follow these steps:
 
-## Functions
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/vizucode/go-concurrency-pipeline
+    cd go-concurrency-pipeline
+    cd concurrent-pattern-archive
+    ```
 
-### `ExecSecureArchive`
+2. Build the project:
+    ```sh
+    go build -o secure-archive
+    ```
 
-```go
-func ExecSecureArchive(srcDir string) {
-    chanFile := readFile(srcDir)
-
-    chanEnc1 := encryptContent(chanFile)
-    chanEnc2 := encryptContent(chanFile)
-    chanEnc3 := encryptContent(chanFile)
-
-    chanEncOut := multiPlexerEncrypt(chanEnc1, chanEnc2, chanEnc3)
-
-    archive(chanEncOut)
-}
-```
-
-- **Description**: The main function that orchestrates the reading, encrypting, and archiving of files.
-- **Parameters**: 
-  - `srcDir` - The source directory containing files to be archived.
-- **Flow**:
-  1. Reads files from the source directory using `readFile`.
-  2. Encrypts the files concurrently using three instances of `encryptContent`.
-  3. Merges the encrypted file channels using `multiPlexerEncrypt`.
-  4. Archives the encrypted files using `archive`.
-
-### `readFile`
-
-- **Description**: Reads files from the specified directory and sends them to a channel.
-- **Parameters**: 
-  - `srcDir` - The source directory.
-- **Returns**: A channel that outputs file data.
-
-### `encryptContent`
-
-- **Description**: Encrypts file content read from the input channel and sends the encrypted data to an output channel.
-- **Parameters**: 
-  - `chanFile` - Input channel with file data.
-- **Returns**: A channel that outputs encrypted file data.
-
-### `multiPlexerEncrypt`
-
-- **Description**: Merges multiple encrypted file data channels into a single output channel.
-- **Parameters**: 
-  - `chanEnc1`, `chanEnc2`, `chanEnc3` - Input channels with encrypted file data.
-- **Returns**: A single output channel with merged encrypted file data.
-
-### `archive`
-
-- **Description**: Archives the encrypted files from the input channel.
-- **Parameters**: 
-  - `chanEncOut` - Input channel with encrypted file data.
+3. Run the executable:
+    ```sh
+    ./secure-archive
+    ```
 
 ## Usage
+To use this project, ensure you have a directory of files you want to archive securely. Modify the source directory path in the `main` function and run the program. The encrypted and archived files will be saved in the output directory.
 
-1. Ensure you have Go installed on your machine.
-2. Clone the repository.
-3. Place the files you want to encrypt and archive in the source directory.
-4. Run the application by executing `ExecSecureArchive` with the path to the source directory.
+## Conclusion
+The concurrency-pattern pipeline significantly enhances the performance and scalability of secure file archiving. By leveraging concurrent processing, the pipeline can handle large datasets efficiently, making it suitable for high-performance applications.
 
-```bash
-go run main.go /path/to/source/directory
-```
+## References
+- [Concurrency in Go](https://go.dev/blog/pipelines)
 
-## Contributing
+---
 
-Contributions are welcome! Please open an issue or submit a pull request with your changes.
+*Feel free to reach out if you have any questions or need further assistance!*
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
-
-This `README.md` includes a sequence diagram in plain text, detailing the flow of the `ExecSecureArchive` function. You can copy this directly into your project.
+Thank You!
