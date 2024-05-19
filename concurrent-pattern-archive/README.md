@@ -1,4 +1,3 @@
-```markdown
 # Concurrency-pattern Pipeline for Secure Archiving
 
 ## Table of Contents
